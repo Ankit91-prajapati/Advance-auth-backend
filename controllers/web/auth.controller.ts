@@ -227,14 +227,14 @@ export async function refreshHandler(req: Request, res: Response) {
     res.cookie("accessToken", accessToken,{
       httpOnly:true,
       secure:isProd,
-      sameSite:"lax",
+      sameSite:"none",
       maxAge:15*60*100
     })
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -452,7 +452,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
      res.cookie("accessToken", accessToken,{
       httpOnly:true,
       secure:isProd,
-      sameSite:"lax",
+      sameSite:"none",
       maxAge:15*60*100
     })
 
