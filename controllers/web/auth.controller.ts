@@ -174,6 +174,7 @@ export async function login(req: Request, res: Response) {
       httpOnly: true,
       secure: isProd,
       sameSite: "none",
+      domain:process.env.VITE_FRONTEND_URL,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
@@ -235,6 +236,7 @@ export async function refreshHandler(req: Request, res: Response) {
       httpOnly:true,
       secure:isProd,
       sameSite:"none",
+      domain:process.env.VITE_FRONTEND_URL,
       maxAge:15*60*100,
       path: "/",
     })
@@ -243,6 +245,7 @@ export async function refreshHandler(req: Request, res: Response) {
       httpOnly: true,
       secure: isProd,
       sameSite: "none",
+      domain:process.env.VITE_FRONTEND_URL,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
@@ -470,6 +473,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
       httpOnly:true,
       secure:isProd,
       sameSite:"none",
+      domain:process.env.VITE_FRONTEND_URL,
       maxAge:15*60*100,
       path: "/",
     })
@@ -479,6 +483,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
       httpOnly: true,
       secure: isProd,
       sameSite: "none",
+      domain:process.env.VITE_FRONTEND_URL,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
