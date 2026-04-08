@@ -70,6 +70,7 @@ export async function register(req: Request, res: Response) {
 
 
 
+
 export async function verifyEmail(req: Request, res: Response) {
   console.log(req.body)
   const {token} = req.body;
@@ -103,6 +104,9 @@ export async function verifyEmail(req: Request, res: Response) {
       .json({ message: "Internal server error", error: error });
   }
 }
+
+
+
 
 
 //login user
@@ -179,11 +183,14 @@ export async function login(req: Request, res: Response) {
     });
   } catch (error) {
     return res.status(500).json({
+      
       message: "Internal server error",
       error,
     });
   }
 }
+
+
 
 
 //Refresh handler
@@ -240,7 +247,7 @@ export async function refreshHandler(req: Request, res: Response) {
       .status(200)
       .json({
         success: true,
-        message: "Login successfully done",
+        message: " Refresh Login successfully done",
         user: user,
       });
   } catch (error) {
@@ -261,6 +268,10 @@ export async function logout(req: Request, res: Response) {
     message: " User Logged out",
   });
 }
+
+
+
+
 
 export async function forgotPassword(req: Request, res: Response) {
   try {
@@ -308,6 +319,8 @@ export async function forgotPassword(req: Request, res: Response) {
 
 
 
+
+
 export async function resetPassword(req: Request, res: Response) {
   try {
     const { token, newPassword } = req.body as {
@@ -331,7 +344,6 @@ export async function resetPassword(req: Request, res: Response) {
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
-
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiryDate = undefined;
@@ -346,6 +358,7 @@ export async function resetPassword(req: Request, res: Response) {
     });
   }
 }
+
 
 
 
@@ -373,6 +386,8 @@ export async function googleAuthStart(req: Request, res: Response) {
       .json({ success: false, message: "Internal server error" });
   }
 }
+
+
 
 
 
