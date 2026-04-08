@@ -39,7 +39,7 @@ export async function register(req: Request, res: Response) {
       role: "user",
     });
 
-    const verifyToken: string = jwt.sign(
+    const verifyToken = jwt.sign(
       { id: newlyCreatedUser.id },
       process.env.JWT_SECRET as string,
       { expiresIn: "1d" }
@@ -49,7 +49,7 @@ export async function register(req: Request, res: Response) {
     sendVerifyEmail(
       normalisedEmail,
       "Verify your email",
-      `<h1>click Link to verify <a href="${verify}"><button> Click to verify your email </button></a>   </h1>`
+      `<h1>click Link to verify <a href="${verify}"><button> ${verify} </button></a>   </h1>`
     );
     return res
       .status(201)
@@ -80,9 +80,7 @@ export async function verifyEmail(req: Request, res: Response) {
         .status(400)
         .json({ success: false, message: "token is missing" });
     }
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      id: string;
-    };
+    const payload = jwt.verify(token , process.env.JWT_SECRET as string) as {id:string }
 
     const user = await UserModel.findById(payload.id);
 
