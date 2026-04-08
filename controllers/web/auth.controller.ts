@@ -164,16 +164,18 @@ export async function login(req: Request, res: Response) {
     res.cookie("accessToken", accessToken,{
       httpOnly:true,
       secure:isProd,
-      sameSite:"lax",
-      maxAge:15*60*100
+      sameSite:"none",
+      maxAge:15*60*100,
+      path: "/",
     })
 
     // ✅ Refresh Token Cookie (LONG LIFE)
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
 
     return res.status(200).json({
@@ -233,7 +235,8 @@ export async function refreshHandler(req: Request, res: Response) {
       httpOnly:true,
       secure:isProd,
       sameSite:"none",
-      maxAge:15*60*100
+      maxAge:15*60*100,
+      path: "/",
     })
 
     res.cookie("refreshToken", refreshToken, {
@@ -241,6 +244,7 @@ export async function refreshHandler(req: Request, res: Response) {
       secure: isProd,
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
 
     return res
@@ -466,15 +470,17 @@ export async function googleAuthCallback(req: Request, res: Response) {
       httpOnly:true,
       secure:isProd,
       sameSite:"none",
-      maxAge:15*60*100
+      maxAge:15*60*100,
+      path: "/",
     })
 
     // 🍪 Set cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
 
     // 📤 Response
