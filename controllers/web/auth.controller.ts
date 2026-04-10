@@ -160,6 +160,7 @@ export async function login(req: Request, res: Response) {
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
       maxAge: 15 * 60 * 100,
+      path:"/"
     });
 
     // ✅ Refresh Token Cookie (LONG LIFE)
@@ -168,6 +169,7 @@ export async function login(req: Request, res: Response) {
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path:"/"
     });
 
     return res.status(200).json({
@@ -225,8 +227,8 @@ export async function refreshHandler(req: Request, res: Response) {
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
-      domain: process.env.VITE_FRONTEND_URL,
       maxAge: 15 * 60 * 100,
+      path:"/",
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -234,6 +236,8 @@ export async function refreshHandler(req: Request, res: Response) {
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path:"/"
+
     });
 
     return res.status(200).json({
@@ -249,9 +253,22 @@ export async function refreshHandler(req: Request, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-  res.clearCookie("accessToken", { path: "/" });
-  res.clearCookie("refreshToken", { path: "/" });
+ const isProd = process.env.NODE_ENV === "production";
+ res.clearCookie("accessToken", {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+});
 
+
+res.clearCookie("refreshToken", {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+});
+ 
   return res.status(200).json({
     success: true,
     message: " User Logged out",
@@ -441,6 +458,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
       maxAge: 15 * 60 * 100,
+      path:"/",
     });
 
     // 🍪 Set cookie
