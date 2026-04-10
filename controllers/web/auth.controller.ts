@@ -12,6 +12,7 @@ import crypto from "crypto";
 import getGoogleClient from "../../lib/getGoogleClient.js";
 
 
+
 export async function register(req: Request, res: Response) {
   try {
     const user = userRegisterSchema.safeParse(req.body);
@@ -51,14 +52,12 @@ export async function register(req: Request, res: Response) {
       "Verify your email",
       `<h1>click Link to verify <a href="${verify}"><button> click here to verify </button></a>   </h1>`
     );
-    return res
-      .status(201)
-      .json({
-        success: true,
-        user: newlyCreatedUser,
-        message: "User created and verification URL send to your email",
-        verifyToken: verify,
-      });
+    return res.status(201).json({
+      success: true,
+      user: newlyCreatedUser,
+      message: "User created and verification URL send to your email",
+      verifyToken: verify,
+    });
   } catch (error) {
     return res
       .status(500)
@@ -66,14 +65,9 @@ export async function register(req: Request, res: Response) {
   }
 }
 
-
-
-
-
-
 export async function verifyEmail(req: Request, res: Response) {
-  console.log(req.body)
-  const {token} = req.body;
+  console.log(req.body);
+  const { token } = req.body;
 
   try {
     if (!token) {
@@ -81,7 +75,9 @@ export async function verifyEmail(req: Request, res: Response) {
         .status(400)
         .json({ success: false, message: "token is missing" });
     }
-    const payload = jwt.verify(token , process.env.JWT_SECRET as string) as {id:string }
+    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      id: string;
+    };
 
     const user = await UserModel.findById(payload.id);
 
@@ -104,8 +100,6 @@ export async function verifyEmail(req: Request, res: Response) {
       .json({ message: "Internal server error", error: error });
   }
 }
-
-
 
 
 
@@ -161,21 +155,19 @@ export async function login(req: Request, res: Response) {
 
     const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("accessToken", accessToken,{
-      httpOnly:true,
-      secure:isProd,
-      sameSite:"none",
-      maxAge:15*60*100,
-      
-    })
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: 15 * 60 * 100,
+    });
 
     // ✅ Refresh Token Cookie (LONG LIFE)
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "none",
+      sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      
     });
 
     return res.status(200).json({
@@ -185,13 +177,11 @@ export async function login(req: Request, res: Response) {
     });
   } catch (error) {
     return res.status(500).json({
-      
       message: "Internal server error",
       error,
     });
   }
 }
-
 
 
 
@@ -231,30 +221,26 @@ export async function refreshHandler(req: Request, res: Response) {
     const refreshToken = createRefreshtoken(user.id, user.tokenVersion);
 
     const isProd = process.env.NODE_ENV === "production";
-    res.cookie("accessToken", accessToken,{
-      httpOnly:true,
-      secure:isProd,
-      sameSite:"none",
-      domain:process.env.VITE_FRONTEND_URL,
-      maxAge:15*60*100,
-     
-    })
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      domain: process.env.VITE_FRONTEND_URL,
+      maxAge: 15 * 60 * 100,
+    });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "none",
+      sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      
     });
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: " Refresh Login successfully done",
-        user: user,
-      });
+    return res.status(200).json({
+      success: true,
+      message: " Refresh Login successfully done",
+      user: user,
+    });
   } catch (error) {
     return res
       .status(500)
@@ -262,19 +248,15 @@ export async function refreshHandler(req: Request, res: Response) {
   }
 }
 
-
-
 export async function logout(req: Request, res: Response) {
-  res.clearCookie("accessToken",{path:"/"})
+  res.clearCookie("accessToken", { path: "/" });
   res.clearCookie("refreshToken", { path: "/" });
 
   return res.status(200).json({
-    success:true,
+    success: true,
     message: " User Logged out",
   });
 }
-
-
 
 
 
@@ -308,21 +290,17 @@ export async function forgotPassword(req: Request, res: Response) {
       `<h1>click Link to verify <a href="${resetUrl}"><button>click here to verify email </button></a>   </h1>`
     );
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "verification mail sent  to your Email",
-        resetUrl: resetUrl,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "verification mail sent  to your Email",
+      resetUrl: resetUrl,
+    });
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Internal server error", error: error });
   }
 }
-
-
 
 
 
@@ -364,9 +342,6 @@ export async function resetPassword(req: Request, res: Response) {
   }
 }
 
-
-
-
 export async function googleAuthStart(req: Request, res: Response) {
   try {
     const client = getGoogleClient();
@@ -378,23 +353,17 @@ export async function googleAuthStart(req: Request, res: Response) {
     });
 
     console.log(url);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "successfully redirect to google login",
-        url: url,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "successfully redirect to google login",
+      url: url,
+    });
   } catch (error) {
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
   }
 }
-
-
-
-
 
 export async function googleAuthCallback(req: Request, res: Response) {
   try {
@@ -467,19 +436,18 @@ export async function googleAuthCallback(req: Request, res: Response) {
 
     const isProd = process.env.NODE_ENV === "production";
 
-     res.cookie("accessToken", accessToken,{
-      httpOnly:true,
-      secure:isProd,
-      sameSite:"none",
-      maxAge:15*60*100,
-      
-    })
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: 15 * 60 * 100,
+    });
 
     // 🍪 Set cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "none",
+      sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
