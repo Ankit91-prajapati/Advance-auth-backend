@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { userLoginSchema, userRegisterSchema } from "./auth.schema.js";
 import UserModel from "../../models/user.model.js";
 import bcrypt from "bcryptjs";
@@ -50,7 +50,7 @@ export async function register(req: Request, res: Response) {
     sendVerifyEmail(
       normalisedEmail,
       "Verify your email",
-      `<h1>click Link to verify <a href="${verify}"><button> click here to verify </button></a>   </h1>`
+      `<h1>click Link to verify <a href="${verify}"><button> ${verify} </button></a>   </h1>`
     );
     return res.status(201).json({
       success: true,
