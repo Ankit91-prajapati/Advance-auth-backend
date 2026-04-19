@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { userLoginSchema, userRegisterSchema } from "./auth.schema.js";
 import UserModel from "../../models/user.model.js";
 import bcrypt from "bcryptjs";
@@ -50,13 +50,13 @@ export async function register(req: Request, res: Response) {
     sendVerifyEmail(
       normalisedEmail,
       "Verify your email",
-      `<h1>click Link to verify <a href="${verify}"><button> click here to verify </button></a>   </h1>`
+      `<h1>click Link to verify <a href="${verify}"><button> ${verify} </button></a>   </h1>`
     );
     return res.status(201).json({
       success: true,
       user: newlyCreatedUser,
       message: "User created and verification URL send to your email",
-      verifyToken: verify,
+     
     });
   } catch (error) {
     return res
@@ -92,7 +92,8 @@ export async function verifyEmail(req: Request, res: Response) {
     }
 
     user.isemailVerified = true;
-    user.save();
+    await user.save();
+
     return res.status(200).json({ success: true, message: "User is verified" });
   } catch (error) {
     return res
@@ -159,7 +160,7 @@ export async function login(req: Request, res: Response) {
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
-      maxAge: 15 * 60 * 100,
+      maxAge: 15 * 60 * 1000,
       path:"/"
     });
 
@@ -211,7 +212,7 @@ export async function refreshHandler(req: Request, res: Response) {
         .json({ success: false, message: "user not  found" });
     }
 
-    if (payload.tokenVersion != user.tokenVersion) {
+    if (payload.tokenVersion !== user.tokenVersion) {
       return res.status(400).json({ success: false, message: "invalid token" });
     }
 
@@ -310,7 +311,7 @@ export async function forgotPassword(req: Request, res: Response) {
     return res.status(200).json({
       success: true,
       message: "verification mail sent  to your Email",
-      resetUrl: resetUrl,
+      
     });
   } catch (error) {
     return res
@@ -430,6 +431,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
       const passwordHash = await bcrypt.hash(randomPassword, 10);
 
       user = await UserModel.create({
+        username: payload?.name ?? normalizedEmail.split("@")[0],
         email: normalizedEmail,
         password: passwordHash,
         role: "user",

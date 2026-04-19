@@ -29,7 +29,7 @@ export default async function userAuth(
         .json({ success: false, message: "User not found" });
     }
 
-    if (user.tokenVersion != payload.tokenVersion) {
+    if (user.tokenVersion !== payload.tokenVersion) {
       return res.status(401).json({ message: "Token invalidated" });
     }
 
